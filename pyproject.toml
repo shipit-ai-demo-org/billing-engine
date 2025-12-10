@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "billing-engine"
+version = "0.6.2"
+description = "CargoCloud monthly billing and invoicing engine — usage aggregation, invoices and dunning"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "CargoCloud Payments Team" }]
+dependencies = [
+    "pydantic>=2.7",
+    "python-dateutil>=2.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
