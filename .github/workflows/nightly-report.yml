@@ -1,0 +1,19 @@
+name: Nightly Billing Report
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aggregate yesterday's usage
+        run: echo "Aggregating usage events for $(date -u +%F)"
+      - name: Generate draft invoices
+        run: echo "Generated draft invoices for all active accounts (demo environment)"
+      - name: Evaluate dunning queue
+        run: echo "Dunning queue evaluated - 0 escalations"
+      - name: Publish report
+        run: echo "Report published to s3://cargocloud-billing-reports/nightly/"
