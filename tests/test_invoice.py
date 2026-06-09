@@ -20,10 +20,17 @@ def test_invoice_totals_line_items():
     assert invoice.total == Decimal("664.00")
 
 
-def test_invoice_rounds_half_up():
-    usage = {"storage.day": 3.5}  # 3.5 * 0.35 = 1.225 -> 1.23
+def test_invoice_rounds_half_to_even():
+    # Banker's rounding: ties go to the even cent.
+    usage = {"storage.day": 3.5}  # 3.5 * 0.35 = 1.225 -> 1.22 (2 is even)
     invoice = generate_invoice("acct_002", usage, PRICE_BOOK, PERIOD_START, PERIOD_END)
-    assert invoice.line_items[0].amount == Decimal("1.23")
+    assert invoice.line_items[0].amount == Decimal("1.22")
+
+
+def test_invoice_rounds_half_to_even_upward():
+    usage = {"storage.day": 10.5}  # 10.5 * 0.35 = 3.675 -> 3.68 (8 is even)
+    invoice = generate_invoice("acct_004", usage, PRICE_BOOK, PERIOD_START, PERIOD_END)
+    assert invoice.line_items[0].amount == Decimal("3.68")
 
 
 def test_unknown_meter_raises():
