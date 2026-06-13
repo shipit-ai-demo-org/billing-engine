@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_EVEN, Decimal
 
 
 @dataclass(frozen=True)
@@ -30,7 +30,14 @@ class Invoice:
 
 
 def _round_money(value: Decimal) -> Decimal:
-    return value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    """Round to cents with banker's rounding (round half to even).
+
+    HALF_UP systematically rounded x.xx5 amounts in our favour, which adds up
+    across millions of parcel line items and drew flags in the FY25 revenue
+    audit. HALF_EVEN is statistically unbiased and matches what the general
+    ledger and payments-service use.
+    """
+    return value.quantize(Decimal("0.01"), rounding=ROUND_HALF_EVEN)
 
 
 def proration_factor(period_start: date, period_end: date, activated_on: date | None) -> Decimal:
